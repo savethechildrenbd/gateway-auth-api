@@ -1,6 +1,8 @@
 const db = require("../models");
 const jwt = require('jsonwebtoken');
 
+const mail = require("../service/send-mail");
+
 const User = db.users;
 
 // Create and Save a new User and Update OTP Code
@@ -21,6 +23,7 @@ exports.otp = async (req, res) => {
     const otp_code = Math.floor(100000 + Math.random() * 900000).toString();
 
     const user = await User.findOne({ where: { email: req.body.email } });
+    // mail.sendOtp();
     if (user) {
       const body = { expire_at: expiry_time.getTime(), code: otp_code };
       await User.update(body, { where: { id: user.id } })
