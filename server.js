@@ -32,10 +32,24 @@ db.sequelize.sync({ force: false }).then(() => {
   console.log("Drop and re-sync db.");
 });
 
-// simple route
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to application." });
+app.engine('.html', require('ejs').__express);
+app.set('views', __dirname + '/views');
+app.set('view engine', 'html');
+
+app.use(express.static(__dirname + '/public'));
+
+let domain = process.env.DOMAIN || '';
+
+app.get('/', function (req, res) {
+  res.render('index', {
+    domain: domain
+  });
 });
+
+// simple route
+// app.get("/", (req, res) => {
+//   res.json({ message: "Welcome to application." });
+// });
 
 require("./app/routes/turorial.routes")(app);
 require("./app/routes/auth.routes")(app);
