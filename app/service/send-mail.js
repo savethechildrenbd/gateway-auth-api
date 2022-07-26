@@ -1,19 +1,16 @@
 const nodemailer = require('nodemailer');
 
-exports.sendOtp = (req, res, next) => {
+const mainHtml = require("./mail-html");
+
+
+exports.sendOtp = async (email, otp_code) => {
     var transporter = nodemailer.createTransport({
-        // host: "localhost",
-        // port: 1025,
-        // secure: false,
-        // auth: {
-        //     user: 'test',
-        //     pass: 'pass'
-        // }
-        host: 'smtp.ethereal.email',
         port: 587,
+        service: 'gmail',
+        host: 'smtp.gmail.com',
         auth: {
-            user: 'ronny.von@ethereal.email',
-            pass: 'QDksWEUxbfJcpqjwwt'
+            user: 'savemefly@gmail.com',
+            pass: 'lietbunvnquysacz'
         },
         tls: {
             // do not fail on invalid certs
@@ -23,9 +20,9 @@ exports.sendOtp = (req, res, next) => {
 
     var mailOptions = {
         from: 'md.mamun@savethechildren.org',
-        to: 'mamunmo21@gmail.com',
-        subject: 'Sending Email using Node.js',
-        text: 'That was easy!'
+        to: email,
+        subject: 'account email verification code',
+        html: mainHtml.message(email, otp_code)
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
