@@ -3,6 +3,7 @@ const express = require("express");
 const cookieParser = require('cookie-parser')
 const cors = require("cors");
 const path = require("path");
+const url = require('url');
 
 const app = express();
 
@@ -52,11 +53,20 @@ app.use(function (req, res, next) {
 
 
 app.get('/', function (req, res) {
-  res.cookie('ClientAuthorizationRequest', req.url);
-  res.render('login');
+  let q = url.parse(req.url, true).query;
+  if (!q.client_id && !q.redirect_uri && !q.client_secret) {
+    res.render('404');
+  } else {
+    res.cookie('ClientAuthorizationRequest', req.url);
+    res.render('login');
+  }
 });
 
-// app.post('/auth', function (req, res) {
+// app.get('/callback/?:token/?:type', function (req, res) {
+//   res.json({ message: req.body });
+// });
+
+// app.post('/callback', function (req, res) {
 //   res.json({ message: req.body });
 // });
 

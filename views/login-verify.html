@@ -15,31 +15,39 @@
       <img class="banner-logo" src="../images/bannerlogo.png" alt="bannerlogo" />
       <h1>Sign up</h1>
       <p>Enter phone number or email address</p>
-      <form action='/auth/login' method="post">
-        <input type="text" id="signInName" name="username"
-          title="Please enter a valid Phone Number or Email Address"
-          placeholder="Phone Number or Email Address" value="<%= username %>" aria-label="Phone Number or Email Address" />
-
-        <button id="next" type="submit">
-          Continue
+      <form action='/auth/login-verify' method="post">
+        <input type="text" id="signInName" name="username" title="Please enter a valid Phone Number or Email Address"
+          readonly placeholder="Phone Number or Email Address" value="<%= username %>"
+          aria-label="Phone Number or Email Address" />
+        <br /> <br />
+        <input class="verifyInput" type="text" name="verification_code" autocomplete="off"
+          placeholder="Verification code" style="display: inline;" aria-hidden="false">
+        <p><%= message %></p>
+        <button type="submit">
+          Verify code
         </button>
+        <button class="sendButton" id="email_ver_but_resend" type="button" aria-label="Send new code"
+          style="display: inline;" aria-hidden="false" onclick="resend()">Send new code</button>
       </form>
-      <div class="divider">
-        <span class="divider-text"> Or continue with </span>
-      </div>
 
-      <div class="social-box">
-        <img class="social-icon" src="../images/google-icon.svg" alt="google" />
-        Google
-      </div>
-      <div class="social-box">
-        <img class="social-icon" src="../images/facebook-icon.svg" alt="google" />
-        Facebook
-      </div>
-
-      <p>Already have an account? <a href="#">Log in</a></p>
+      <p>Already have an account? <a href="/auth/login">Log in</a></p>
     </div>
   </div>
+  <script>
+    function resend() {
+      const formDataJsonString = JSON.stringify({ username: "mamunmo21@gmail.com" });
+      fetch('/auth/resend', {
+        body: formDataJsonString,
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => console.log(data));
+    }
+  </script>
 </body>
 
 </html>

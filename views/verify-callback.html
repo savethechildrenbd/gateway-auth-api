@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign up or sign in</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+
+<body>
+  <div class="container">
+    <div class="white-box">
+      <img class="banner-logo" src="../images/bannerlogo.png" alt="bannerlogo" />
+
+      <form action="<%= redirect_uri %>" method="post" id="verifyBackForm">
+        <img class="banner-logo_" src="../images/loading.gif" alt="loading" style="display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 250px;" />
+
+        <input type="hidden" name="token" value="<%=token%>" />
+
+      </form>
+    </div>
+  </div>
+  <script>
+
+    function sleep(time) {
+      return new Promise((resolve) => setTimeout(resolve, time));
+    }
+
+    (function () {
+      sleep(3000).then(() => {
+        document.getElementById("verifyBackForm").submit();
+      });
+    }())
+
+
+  </script>
+</body>
+
+</html>

@@ -9,10 +9,10 @@ const User = db.users;
 exports.otp = async (req, res) => {
 
   // Validate request
-  if (!req.body.email) {
+  if (!req.body.username) {
     return {
       status: false,
-      message: "Content can not be empty!"
+      message: "Username can not be empty!"
     };
   }
 
@@ -22,8 +22,8 @@ exports.otp = async (req, res) => {
     expiry_time.setMinutes(now_time.getMinutes() + 5);
     const otp_code = Math.floor(100000 + Math.random() * 900000).toString();
 
-    const user = await User.findOne({ where: { email: req.body.email } });
-    await mail.sendOtp(req.body.email, otp_code);
+    const user = await User.findOne({ where: { email: req.body.username } });
+    await mail.sendOtp(req.body.username, otp_code);
     if (user) {
       const body = { expire_at: expiry_time.getTime(), code: otp_code };
       await User.update(body, { where: { id: user.id } })
@@ -31,7 +31,7 @@ exports.otp = async (req, res) => {
     } else {
       // Create a User
       const body = {
-        email: req.body.email,
+        email: req.body.username,
         expire_at: expiry_time.getTime(),
         code: otp_code,
         published: req.body.published ? req.body.published : true
@@ -50,44 +50,40 @@ exports.otp = async (req, res) => {
 // OTP Verify
 exports.otpVerify = async (req, res) => {
   // Validate request
-  if (!req.body.email) {
-    res.status(400).send({
+  if (!req.body.username) {
+    return {
       status: false,
-      message: "Content email can not be empty!"
-    });
-    return;
+      message: "Username can not be empty!"
+    };
   }
 
-  if (!req.body.code) {
-    res.status(400).send({
+  if (!req.body.verification_code) {
+    return {
       status: false,
-      message: "Content code can not be empty!"
-    });
-    return;
+      message: "Verification code can not be empty!"
+    };
   }
 
   try {
-    const email = req.body.email;
-    const code = req.body.code;
+    const email = req.body.username;
+    const code = req.body.verification_code;
 
     const now_time = new Date().getTime();
 
     const user = await User.findOne({ where: { email: email } });
     if (!user) {
-      res.status(401);
-      return res.json({ status: false, message: 'email is not valid' });
+      return { status: false, message: 'email is not valid' };
     }
 
     if (user.code != code) {
       res.status(401);
-      return res.json({ status: false, message: 'OTP you entered is invalid' });
+      return { status: false, message: 'OTP you entered is invalid' };
     }
 
     // calculate time difference
     const time_difference = (user.expire_at - now_time);
     if (time_difference < 0) {
-      res.status(401);
-      return res.json({ status: false, message: 'OTP has expired, please try again.' });
+      return { status: false, message: 'OTP has expired, please try again.' };
     }
 
     const sessionSecret = process.env.SESSION_SECRET;
@@ -96,12 +92,12 @@ exports.otpVerify = async (req, res) => {
     const userPayload = { sub: user.uuid, email: user.email }
 
     const token = jwt.sign(userPayload, sessionSecret, { expiresIn: 60 * 60 * 24 * ACCESS_TOKEN_EXPIRY_DAY });
-    res.json({ status: true, token: token });
+    return { status: true, token: token };
 
   } catch (err) {
-    res.status(500).send({
+    return {
       status: false,
       message: err.message || "Some error occurred while creating the User."
-    });
+    };
   }
 };
