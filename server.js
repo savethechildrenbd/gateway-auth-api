@@ -1,6 +1,8 @@
 require("dotenv").config();
 const express = require("express");
+const cookieParser = require('cookie-parser')
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 
@@ -13,6 +15,9 @@ app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
+// let’s you use the cookieParser in your application
+app.use(cookieParser());
 
 app.use(cors());
 
@@ -32,19 +37,28 @@ db.sequelize.sync({ force: false }).then(() => {
   console.log("Drop and re-sync db.");
 });
 
+app.use(express.static(path.join(__dirname, "static")));
 app.engine('.html', require('ejs').__express);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
 
 app.use(express.static(__dirname + '/public'));
 
-let domain = process.env.DOMAIN || '';
+app.use(function (req, res, next) {
+  let host_url = req.protocol + '://' + req.get('host');
+  req.host_url = host_url;
+  next();
+});
+
 
 app.get('/', function (req, res) {
-  res.render('index', {
-    domain: domain
-  });
+  res.cookie('ClientAuthorizationRequest', req.url);
+  res.render('login');
 });
+
+// app.post('/auth', function (req, res) {
+//   res.json({ message: req.body });
+// });
 
 // simple route
 // app.get("/", (req, res) => {
@@ -53,6 +67,7 @@ app.get('/', function (req, res) {
 
 require("./app/routes/turorial.routes")(app);
 require("./app/routes/auth.routes")(app);
+require("./app/routes/auth-b2c.routes")(app);
 require("./app/routes/monday-crm.routes")(app);
 
 // set port, listen for requests
