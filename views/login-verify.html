@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign up or sign in</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+
+<body>
+  <div class="container">
+    <div class="white-box">
+      <img class="banner-logo" src="../images/bannerlogo.png" alt="bannerlogo" />
+      <h1>Sign up</h1>
+      <p>Enter phone number or email address</p>
+      <form action='/auth/login' method="post">
+        <input type="text" id="signInName" name="username"
+          title="Please enter a valid Phone Number or Email Address"
+          placeholder="Phone Number or Email Address" value="<%= username %>" aria-label="Phone Number or Email Address" />
+
+        <button id="next" type="submit">
+          Continue
+        </button>
+      </form>
+      <div class="divider">
+        <span class="divider-text"> Or continue with </span>
+      </div>
+
+      <div class="social-box">
+        <img class="social-icon" src="../images/google-icon.svg" alt="google" />
+        Google
+      </div>
+      <div class="social-box">
+        <img class="social-icon" src="../images/facebook-icon.svg" alt="google" />
+        Facebook
+      </div>
+
+      <p>Already have an account? <a href="#">Log in</a></p>
+    </div>
+  </div>
+</body>
+
+</html>

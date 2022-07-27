@@ -1,0 +1,146 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: #4a4f53;
+}
+
+body {
+  min-height: 100vh;
+  background: grey;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.container {
+  padding: 0 24px;
+}
+
+.white-box {
+  padding: 40px 30px;
+  margin-top: auto;
+  margin-bottom: auto;
+  height: 100%;
+  background-color: #fff;
+}
+
+input {
+  outline: 0;
+  background-color: #fff !important;
+  background-image: none !important;
+  border-radius: 0.5rem !important;
+  color: #555;
+  display: inline-block;
+  font-size: 1em;
+  height: 24px;
+  line-height: 1.42857143;
+  padding: 6px 0px;
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s !important;
+  width: 100% !important;
+  -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s !important;
+  -webkit-transition: border-color ease-in-out 0.15s,
+    -webkit-box-shadow ease-in-out 0.15s !important;
+}
+
+input::-moz-placeholder {
+  padding-left: 12px;
+}
+
+input:-ms-input-placeholder {
+  padding-left: 12px;
+}
+
+input::placeholder {
+  padding-left: 12px;
+}
+
+input,
+select {
+  border: 1px solid #605e5c;
+}
+
+button {
+  background-image: none;
+  background-color: #da291c;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 1em;
+  font-weight: 400;
+  height: inherit;
+  line-height: 1.3333333;
+  margin-top: 2rem;
+  margin-right: 0;
+  margin-bottom: 1.2rem;
+  margin-left: 0;
+  padding: 10px 16px;
+  text-align: center;
+  touch-action: manipulation;
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  width: inherit;
+  -moz-user-select: none;
+  -ms-touch-action: manipulation;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  color: #fff;
+  width: 42%;
+  box-shadow: 0 0 30px 0 #dae1f7;
+}
+
+button:hover {
+  box-shadow: none;
+  background-color: #9c1e15;
+  color: #fff;
+}
+
+a {
+  color: #009ca6;
+  background-color: transparent;
+}
+
+.banner-logo {
+  width: 70%;
+}
+
+.continue-text {
+  text-align: center;
+}
+
+.divider {
+  width: 100%;
+  height: 10px;
+  border-bottom: 1px solid #f3f2ee;
+  text-align: center;
+}
+.divider-text {
+  background-color: white;
+  padding: 0 10px;
+  font-weight: bold;
+}
+
+.social-box {
+  text-align: center;
+  border: 1px solid rgba(115, 115, 115, 0.4117647059);
+  border-radius: 8px;
+  padding: 8px 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px 0;
+}
+
+.social-icon {
+  width: 8%;
+  position: absolute;
+  left: 5%;
+} /*# sourceMappingURL=style.css.map */
