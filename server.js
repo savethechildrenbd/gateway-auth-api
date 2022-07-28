@@ -3,7 +3,6 @@ const express = require("express");
 const cookieParser = require('cookie-parser')
 const cors = require("cors");
 const path = require("path");
-const url = require('url');
 
 const app = express();
 
@@ -51,23 +50,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-const clients = require("./app/controllers/client.controller");
-
-app.get('/', async function (req, res) {
-  let q = url.parse(req.url, true).query;
-  if (!q.client_id && !q.redirect_uri && !q.client_secret) {
-    res.render('404');
-  } else {
-    const client = await clients.findClient(q.client_id, q.client_secret);
-    if (client == true) {
-      res.cookie('ClientAuthorizationRequest', req.url);
-      res.render('login');
-    } else {
-      res.render('404');
-    }
-  }
-});
-
 // app.get('/callback/?:token/?:type', function (req, res) {
 //   res.json({ message: req.body });
 // });
@@ -81,6 +63,7 @@ app.get('/', async function (req, res) {
 //   res.json({ message: "Welcome to application." });
 // });
 
+require("./app/routes/public.routes")(app);
 require("./app/routes/turorial.routes")(app);
 require("./app/routes/auth.routes")(app);
 require("./app/routes/auth-b2c.routes")(app);

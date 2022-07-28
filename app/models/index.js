@@ -23,6 +23,6 @@ db.sequelize = sequelize;
 db.tutorials = require("./tutorial.model.js")(sequelize, Sequelize);
 db.users = require("./user.model.js")(sequelize, Sequelize);
 db.mondayCrm = require("./monday-crm.model.js")(sequelize, Sequelize);
-db.clients = require("./client.model")(sequelize, Sequelize);
+db.oauthClients = require("./oauth-client.model")(sequelize, Sequelize);
 
 module.exports = db;

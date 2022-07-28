@@ -18,7 +18,9 @@ module.exports = app => {
       if (!req.body.username) {
         res.redirect(req.host_url + req.cookies?.ClientAuthorizationRequest ?? '');
       }
+      
       const login = await auth.otp(req, res);
+
       if (login.status == true) {
         res.render('login-verify', { username: req.body.username, message: '' });
       } else {
@@ -49,13 +51,18 @@ module.exports = app => {
       let q = url.parse(req.cookies?.ClientAuthorizationRequest, true).query;
 
       const loginVerify = await auth.otpVerify(req, res);
-
+      
       if (loginVerify.status == true) {
-        if (q.response_type == 'code') {
+        let response_type = q.response_type;
+        if (response_type == '0') {
           res.header('Authorization', `Bearer ${loginVerify.token}`);
           res.redirect(q.redirect_uri + '/' + loginVerify.token);
         } else {
-          res.render('verify-callback', { redirect_uri: q.redirect_uri ?? '', response_type: q.response_type ?? 'post', token: loginVerify.token });
+          let method = 'get';
+          if (response_type == '2') {
+            method = 'post';
+          }
+          res.render('verify-callback', { redirect_uri: q.redirect_uri ?? '', response_type: method, token: loginVerify.token });
         }
       } else {
         res.render('login-verify', { username: req.body.username, message: loginVerify.message });

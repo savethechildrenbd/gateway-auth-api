@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const User = sequelize.define("clint", {
+  const OauthClient = sequelize.define("oauth_client", {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -42,5 +42,5 @@ module.exports = (sequelize, Sequelize) => {
     }
   });
 
-  return User;
+  return OauthClient;
 };

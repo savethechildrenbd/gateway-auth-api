@@ -20,9 +20,9 @@
           readonly placeholder="Phone Number or Email Address" value="<%= username %>"
           aria-label="Phone Number or Email Address" />
         <br /> <br />
-        <input class="verifyInput" type="text" name="verification_code" autocomplete="off"
+        <input class="verifyInput" type="number" name="verification_code" autocomplete="off" required
           placeholder="Verification code" style="display: inline;" aria-hidden="false">
-        <p><%= message %></p>
+        <p style="color: #9c1e15"><%= message %></p>
         <button type="submit">
           Verify code
         </button>

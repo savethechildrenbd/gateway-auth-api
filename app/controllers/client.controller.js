@@ -1,8 +1,8 @@
 const db = require("../models");
-const Client = db.clients;
+const OauthClient = db.oauthClients;
 const Op = db.Sequelize.Op;
 
-// Create and Save a new Client
+// Create and Save a new OauthClient
 exports.create = (req, res) => {
   // Validate request
   if (!req.body.name) {
@@ -12,7 +12,7 @@ exports.create = (req, res) => {
     return;
   }
 
-  // Create a Client
+  // Create a OauthClient
   const client = {
     name: req.body.name,
     company: req.body.company,
@@ -21,15 +21,15 @@ exports.create = (req, res) => {
     published: req.body.published ? req.body.published : false
   };
 
-  // Save Client in the database
-  Client.create(client)
+  // Save OauthClient in the database
+  OauthClient.create(client)
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Client."
+          err.message || "Some error occurred while creating the OauthClient."
       });
     });
 };
@@ -39,7 +39,7 @@ exports.findAll = (req, res) => {
   const title = req.query.title;
   const condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
 
-  Client.findAll({ where: condition })
+  OauthClient.findAll({ where: condition })
     .then(data => {
       res.send(data);
     })
@@ -51,88 +51,88 @@ exports.findAll = (req, res) => {
     });
 };
 
-// Find a single Client with an id
+// Find a single OauthClient with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  Client.findByPk(id)
+  OauthClient.findByPk(id)
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error retrieving Client with id=" + id
+        message: "Error retrieving OauthClient with id=" + id
       });
     });
 };
 
-// Find a single Client with an client_id
+// Find a single OauthClient with an client_id
 exports.findClient = async (client_id, client_secret) => {
   try {
-    const client = await Client.findOne({ where: { client_id: client_id, client_secret: client_secret } });
+    const client = await OauthClient.findOne({ where: { client_id: client_id, client_secret: client_secret } });
     if (client.uuid) {
-      return true;
+      return { status: true, client }
     } else {
-      return false;
+      return { status: false }
     }
   } catch (__) {
-    return false;
+    return { status: false }
   }
 };
 
-// Update a Client by the id in the request
+// Update a OauthClient by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
 
-  Client.update(req.body, {
+  OauthClient.update(req.body, {
     where: { id: id }
   })
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "Client was updated successfully."
+          message: "OauthClient was updated successfully."
         });
       } else {
         res.send({
-          message: `Cannot update Client with id=${id}. Maybe Client was not found or req.body is empty!`
+          message: `Cannot update OauthClient with id=${id}. Maybe OauthClient was not found or req.body is empty!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error updating Client with id=" + id
+        message: "Error updating OauthClient with id=" + id
       });
     });
 };
 
-// Delete a Client with the specified id in the request
+// Delete a OauthClient with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  Client.destroy({
+  OauthClient.destroy({
     where: { id: id }
   })
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "Client was deleted successfully!"
+          message: "OauthClient was deleted successfully!"
         });
       } else {
         res.send({
-          message: `Cannot delete Client with id=${id}. Maybe Client was not found!`
+          message: `Cannot delete OauthClient with id=${id}. Maybe OauthClient was not found!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Could not delete Client with id=" + id
+        message: "Could not delete OauthClient with id=" + id
       });
     });
 };
 
 // Delete all Tutorials from the database.
 exports.deleteAll = (req, res) => {
-  Client.destroy({
+  OauthClient.destroy({
     where: {},
     truncate: false
   })
@@ -147,9 +147,9 @@ exports.deleteAll = (req, res) => {
     });
 };
 
-// find all published Client
+// find all published OauthClient
 exports.findAllPublished = (req, res) => {
-  Client.findAll({ where: { published: true } })
+  OauthClient.findAll({ where: { published: true } })
     .then(data => {
       res.send(data);
     })

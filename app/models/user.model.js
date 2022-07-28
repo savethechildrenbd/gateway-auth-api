@@ -11,6 +11,9 @@ module.exports = (sequelize, Sequelize) => {
       primaryKey: true,
       unique: true
     },
+    user_id: {
+      type: Sequelize.STRING,
+    },
     email: {
       type: Sequelize.STRING,
       allowNull: false,
@@ -18,6 +21,14 @@ module.exports = (sequelize, Sequelize) => {
     },
     code: {
       type: Sequelize.STRING
+    },
+    provider: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
+    avatar: {
+      type: Sequelize.STRING,
+      allowNull: true,
     },
     expire_at: {
       type: Sequelize.STRING
