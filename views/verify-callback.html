@@ -14,14 +14,12 @@
     <div class="white-box">
       <img class="banner-logo" src="../images/bannerlogo.png" alt="bannerlogo" />
 
+      <img class="banner-logo_" src="../images/loading.gif" alt="loading" style="display: block;
+      margin-left: auto;
+      margin-right: auto;
+      width: 250px;" />
       <form action="<%= redirect_uri %>" method="<%= response_type %>" id="verifyBackForm">
-        <img class="banner-logo_" src="../images/loading.gif" alt="loading" style="display: block;
-        margin-left: auto;
-        margin-right: auto;
-        width: 250px;" />
-
-        <input type="hidden" name="token" value="<%=token%>" />
-
+        <input type="hidden" name="accessToken" value="<%=token%>" />
       </form>
     </div>
   </div>

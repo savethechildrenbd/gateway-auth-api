@@ -43,7 +43,7 @@ module.exports = app => {
   });
 
   // Verify OTP a new User
-  router.get("/login-verify", async function (req, res) {
+  router.post("/login-verify", async function (req, res) {
     try {
 
       let q = url.parse(req.cookies?.ClientAuthorizationRequest, true).query;
@@ -54,8 +54,6 @@ module.exports = app => {
         if (q.response_type == 'code') {
           res.header('Authorization', `Bearer ${loginVerify.token}`);
           res.redirect(q.redirect_uri + '/' + loginVerify.token);
-          res.redirect(q.redirect_uri);
-          res.redirect('http://localhost:8000/');
         } else {
           res.render('verify-callback', { redirect_uri: q.redirect_uri ?? '', response_type: q.response_type ?? 'post', token: loginVerify.token });
         }

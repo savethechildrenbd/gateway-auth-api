@@ -11,15 +11,21 @@ module.exports = (sequelize, Sequelize) => {
       primaryKey: true,
       unique: true
     },
+    name: {
+      type: Sequelize.STRING,
+    },
+    company: {
+      type: Sequelize.STRING,
+    },
     client_id: {
       type: Sequelize.STRING,
-      defaultValue: Sequelize.UUIDV1,
+      defaultValue: Sequelize.UUIDV4,
       allowNull: false,
       unique: true
     },
     client_secret: {
       type: Sequelize.STRING,
-      defaultValue: Sequelize.UUIDV4,
+      defaultValue: Sequelize.UUIDV1,
       allowNull: false,
       unique: true
     },

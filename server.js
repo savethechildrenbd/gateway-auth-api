@@ -51,14 +51,20 @@ app.use(function (req, res, next) {
   next();
 });
 
+const clients = require("./app/controllers/client.controller");
 
-app.get('/', function (req, res) {
+app.get('/', async function (req, res) {
   let q = url.parse(req.url, true).query;
   if (!q.client_id && !q.redirect_uri && !q.client_secret) {
     res.render('404');
   } else {
-    res.cookie('ClientAuthorizationRequest', req.url);
-    res.render('login');
+    const client = await clients.findClient(q.client_id, q.client_secret);
+    if (client == true) {
+      res.cookie('ClientAuthorizationRequest', req.url);
+      res.render('login');
+    } else {
+      res.render('404');
+    }
   }
 });
 
@@ -79,6 +85,7 @@ require("./app/routes/turorial.routes")(app);
 require("./app/routes/auth.routes")(app);
 require("./app/routes/auth-b2c.routes")(app);
 require("./app/routes/monday-crm.routes")(app);
+require("./app/routes/client.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.NODE_PORT || 8080;
