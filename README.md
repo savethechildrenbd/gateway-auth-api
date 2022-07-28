@@ -11,7 +11,7 @@
 Watch application on server using following commands
 
 ```bash
-    npm start
+    npm start or npm run watch
 ```
 
 
