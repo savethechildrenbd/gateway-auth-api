@@ -43,17 +43,21 @@ module.exports = app => {
   });
 
   // Verify OTP a new User
-  router.post("/login-verify", async function (req, res) {
+  router.get("/login-verify", async function (req, res) {
     try {
 
       let q = url.parse(req.cookies?.ClientAuthorizationRequest, true).query;
 
       const loginVerify = await auth.otpVerify(req, res);
+
       if (loginVerify.status == true) {
         if (q.response_type == 'code') {
+          res.header('Authorization', `Bearer ${loginVerify.token}`);
           res.redirect(q.redirect_uri + '/' + loginVerify.token);
+          res.redirect(q.redirect_uri);
+          res.redirect('http://localhost:8000/');
         } else {
-          res.render('verify-callback', { redirect_uri: q.redirect_uri ?? 'post', token: loginVerify.token });
+          res.render('verify-callback', { redirect_uri: q.redirect_uri ?? '', response_type: q.response_type ?? 'post', token: loginVerify.token });
         }
       } else {
         res.render('login-verify', { username: req.body.username, message: loginVerify.message });
