@@ -19,21 +19,13 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v1
         with:
-          node-version: '14.18.1'
-        env:
-          DB_HOST: ucan-gateway-mamun-db.mysql.database.azure.com
-          DB_USER: ucangatewaymamun@ucan-gateway-mamun-db
-          DB_PASSWORD: Ucangateway@mamun
-          DB_NAME: ucan_db
-          DB_PORT: 3306
-          NODE_PORT: 80
-          SESSION_SECRET: iqKIrZIOa9UkgE0lp8R8MQ
-          ACCESS_TOKEN_EXPIRY_DAY: 1
+          node-version: '14.x'
 
-      - name: npm install
-        run: npm install
-      - name: build the app
-        run: npm run build --if-present
+      - name: npm install, build, and test
+        run: |
+          npm install
+          npm run build --if-present
+          npm run test --if-present
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
@@ -60,5 +52,5 @@ jobs:
         with:
           app-name: 'ucan-gateway-api-mamun'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_68F59E0B75344692B99FBA8B84A5BF98 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F9DFC500C5EC47D8817743B37EA1B0A2 }}
           package: .
