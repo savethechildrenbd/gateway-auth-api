@@ -31,9 +31,9 @@ jobs:
           ACCESS_TOKEN_EXPIRY_DAY: 1
 
       - name: npm install
-        run: |
-          npm install
-          npm run serve --if-present
+        run: npm install
+      - name: Build the app
+        run: npm run serve
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
