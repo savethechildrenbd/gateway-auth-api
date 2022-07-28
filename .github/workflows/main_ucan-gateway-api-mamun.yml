@@ -20,6 +20,15 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '14.x'
+        env:
+          DB_HOST: ucan-gateway-mamun-db.mysql.database.azure.com
+          DB_USER: ucangatewaymamun@ucan-gateway-mamun-db
+          DB_PASSWORD: Ucangateway@mamun
+          DB_NAME: ucan_db
+          DB_PORT: 3306
+          NODE_PORT: 7070
+          SESSION_SECRET: iqKIrZIOa9UkgE0lp8R8MQ
+          ACCESS_TOKEN_EXPIRY_DAY: 1
 
       - name: npm install, build, and test
         run: |
