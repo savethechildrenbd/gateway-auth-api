@@ -33,7 +33,7 @@ jobs:
       - name: npm install
         run: npm install
       - name: Build the app
-        run: npm run start
+        run: npm run build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
