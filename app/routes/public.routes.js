@@ -1,7 +1,9 @@
 module.exports = app => {
   const url = require('url');
+  const moment = require('moment-timezone');
 
   const oauthClient = require("../controllers/client.controller");
+  const oauthAccessToken = require("../controllers/oauth-access-token.controller");
 
   let router = require("express").Router();
 
@@ -18,6 +20,35 @@ module.exports = app => {
         res.render('404');
       }
     }
+  });
+  // console.log("ssssssssssssss", moment().utc(true).toDate())
+  router.get('/test', async function (req, res) {
+    // try {
+    //   console.log("ssssssssssssss", moment().utc(true).toDate())
+    //   const sdfsd = await oauthAccessToken.create(req, res);
+    //   console.log(sdfsd)
+    //   // process.env.TZ = "Asia/Dhaka";
+    //   // const expired_at = new Date();
+
+    //   // var jun = moment(expired_at);
+    //   var newYork = moment();
+
+    //   // process.env.TZ = 'UTC';
+    //   // console.log(moment.tz);
+    // } catch (error) {
+      // const sdfsd = await oauthAccessToken.create(req, res);
+      // process.env.TZ = "Asia/Dhaka";
+      // const expired_at = new Date();
+
+      // var jun = moment(expired_at);
+      var newYork = moment();
+
+      // process.env.TZ = 'UTC';
+      // console.log(moment.tz);
+      // res.json({ status: true, message: "OTP sent successfully", expired_at: moment().utc(true).toDate() });
+    // }
+
+
   });
 
   app.use('/', router);

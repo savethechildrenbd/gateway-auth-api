@@ -1,7 +1,9 @@
 const db = require("../models");
 const jwt = require('jsonwebtoken');
+const url = require('url');
 
 const mail = require("../service/send-mail");
+const oauthAccessToken = require("../controllers/oauth-access-token.controller");
 
 const User = db.users;
 
@@ -17,12 +19,22 @@ exports.otp = async (req, res) => {
   }
 
   try {
+    let query = url.parse(req.cookies?.ClientAuthorizationRequest, true).query;
+
+    if (!query && !query.client_id && !query.redirect_uri && !q.client_secret) {
+      return {
+        status: false,
+        message: "client id can not be empty!"
+      };
+    }
+
     const now_time = new Date();
     const expiry_time = new Date(now_time);
     expiry_time.setMinutes(now_time.getMinutes() + 5);
     const otp_code = Math.floor(100000 + Math.random() * 900000).toString();
 
-    const user = await User.findOne({ where: { email: req.body.username } });
+
+    const user = await User.findOne({ where: { email: req.body.username, client_id: query.client_id } });
     await mail.sendOtp(req.body.username, otp_code);
     if (user) {
       const body = { expire_at: expiry_time.getTime(), code: otp_code };
@@ -32,6 +44,7 @@ exports.otp = async (req, res) => {
       // Create a User
       const body = {
         email: req.body.username,
+        client_id: query.client_id,
         expire_at: expiry_time.getTime(),
         code: otp_code,
         published: req.body.published ? req.body.published : true
@@ -40,6 +53,7 @@ exports.otp = async (req, res) => {
       return { status: true, message: "OTP sent successfully" };
     }
   } catch (err) {
+    console.log("ssssssssssssssss");
     return {
       status: false,
       message: err.message || "Some error occurred while creating the User."
@@ -65,12 +79,18 @@ exports.otpVerify = async (req, res) => {
   }
 
   try {
+    let query = url.parse(req.cookies?.ClientAuthorizationRequest, true).query;
+    if (!query && !query.client_id && !query.redirect_uri && !q.client_secret) {
+      return {
+        status: false,
+        message: "client id can not be empty!"
+      };
+    }
     const email = req.body.username;
     const code = req.body.verification_code;
-
     const now_time = new Date().getTime();
 
-    const user = await User.findOne({ where: { email: email } });
+    const user = await User.findOne({ where: { email: email, client_id: query.client_id } });
     if (!user) {
       return { status: false, message: 'email is not valid' };
     }
@@ -85,6 +105,8 @@ exports.otpVerify = async (req, res) => {
     if (time_difference < 0) {
       return { status: false, message: 'OTP has expired, please try again.' };
     }
+
+    await oauthAccessToken.create(query.client_id, user.uuid);
 
     const sessionSecret = process.env.SESSION_SECRET;
     const ACCESS_TOKEN_EXPIRY_DAY = process.env.ACCESS_TOKEN_EXPIRY_DAY;

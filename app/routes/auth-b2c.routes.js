@@ -20,6 +20,7 @@ module.exports = app => {
       }
       
       const login = await auth.otp(req, res);
+      console.log("ddddddddddddddd",login);
 
       if (login.status == true) {
         res.render('login-verify', { username: req.body.username, message: '' });
