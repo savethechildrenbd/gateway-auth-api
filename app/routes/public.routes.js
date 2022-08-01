@@ -3,7 +3,7 @@ module.exports = app => {
 
   const oauthClient = require("../controllers/admin-api/oauth-client.controller");
   const oauthAccessToken = require("../controllers/oauth-access-token.controller");
-  const auth = require("../controllers/auth-b2c.controller.js");
+  const authController = require("../controllers/auth-b2c.controller.js");
 
   let router = require("express").Router();
 
@@ -34,12 +34,11 @@ module.exports = app => {
         // calculate time difference
         const time_difference = (getOauthAccessToken.expired_at - now_time);
         if (time_difference < 0) {
-          res.send({ status: false, message: 'Token has expired, please try again.' });
+          res.json({ status: false, message: 'Token has expired, please try again.' });
+        } else {
+          const jwtToken = await authController.jwtToken(user);
+          res.json(jwtToken);
         }
-
-        const jwtToken = await auth.jwtToken(user);
-
-        res.send(jwtToken);
       } else {
         res.render('404');
       }
