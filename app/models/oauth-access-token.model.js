@@ -1,3 +1,5 @@
+const userModel = require("./user.model");
+
 module.exports = (sequelize, Sequelize) => {
   const OauthAccessToken = sequelize.define("oauth_access_token", {
     id: {
@@ -23,6 +25,8 @@ module.exports = (sequelize, Sequelize) => {
     oauthAccessToken.expired_at = Date.now() + (60000 * 5); // Milliseconds * Minute
     oauthAccessToken.id = records[0][0].uuid;
   });
+  
+  // OauthAccessToken.belongsTo(userModel, { foreignKey: 'user_id', as: 'users' });
 
   return OauthAccessToken;
 };

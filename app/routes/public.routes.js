@@ -2,7 +2,9 @@ module.exports = app => {
   const url = require('url');
 
   const oauthClient = require("../controllers/oauth-client.controller");
-  
+  const oauthAccessToken = require("../controllers/oauth-access-token.controller");
+  const auth = require("../controllers/auth-b2c.controller.js");
+
   let router = require("express").Router();
 
   router.get('/', async function (req, res) {
@@ -17,6 +19,35 @@ module.exports = app => {
       } else {
         res.render('404');
       }
+    }
+  });
+
+  router.get('/:id', async function (req, res) {
+    try {
+      const now_time = new Date().getTime();
+      const getOauthAccessToken = await oauthAccessToken.findOne(req.params.id);
+
+      if (getOauthAccessToken && getOauthAccessToken.user_id) {
+
+        const user = await oauthAccessToken.findUser(getOauthAccessToken.user_id);
+
+        // calculate time difference
+        const time_difference = (getOauthAccessToken.expired_at - now_time);
+        if (time_difference < 0) {
+          res.send({ status: false, message: 'Token has expired, please try again.' });
+        }
+
+        const jwtToken = await auth.jwtToken(user);
+
+        res.send(jwtToken);
+      } else {
+        res.render('404');
+      }
+    } catch (error) {
+      res.send({
+        status: false,
+        message: error.message || "Some error occurred while retrieving token id!"
+      });
     }
   });
 

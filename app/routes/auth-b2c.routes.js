@@ -20,7 +20,6 @@ module.exports = app => {
       }
       
       const login = await auth.otp(req, res);
-      console.log("ddddddddddddddd",login);
 
       if (login.status == true) {
         res.render('login-verify', { username: req.body.username, message: '' });
@@ -56,14 +55,14 @@ module.exports = app => {
       if (loginVerify.status == true) {
         let response_type = q.response_type;
         if (response_type == '0') {
-          res.header('Authorization', `Bearer ${loginVerify.token}`);
-          res.redirect(q.redirect_uri + '/' + loginVerify.token);
+          res.header('Authorization', `Bearer ${loginVerify.accessToken}`);
+          res.redirect(q.redirect_uri + '/' + loginVerify.oauthAccessTokenId);
         } else {
           let method = 'get';
           if (response_type == '2') {
             method = 'post';
           }
-          res.render('verify-callback', { redirect_uri: q.redirect_uri ?? '', response_type: method, token: loginVerify.token });
+          res.render('verify-callback', { redirect_uri: q.redirect_uri ?? '', response_type: method, token: loginVerify.accessToken });
         }
       } else {
         res.render('login-verify', { username: req.body.username, message: loginVerify.message });

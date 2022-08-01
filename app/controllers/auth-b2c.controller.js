@@ -105,7 +105,7 @@ exports.otpVerify = async (req, res) => {
       return { status: false, message: 'OTP has expired, please try again.' };
     }
 
-    await oauthAccessToken.create(query.client_id, user.uuid);
+    const oauthAccessTokenId = await oauthAccessToken.create(query.client_id, user.uuid);
 
     const sessionSecret = process.env.SESSION_SECRET;
     const ACCESS_TOKEN_EXPIRY_DAY = process.env.ACCESS_TOKEN_EXPIRY_DAY;
@@ -113,7 +113,7 @@ exports.otpVerify = async (req, res) => {
     const userPayload = { sub: user.uuid, email: user.email }
 
     const token = jwt.sign(userPayload, sessionSecret, { expiresIn: 60 * 60 * 24 * ACCESS_TOKEN_EXPIRY_DAY });
-    return { status: true, token: token };
+    return { status: true, accessToken: token, oauthAccessTokenId: oauthAccessTokenId.id };
 
   } catch (err) {
     return {
@@ -121,4 +121,16 @@ exports.otpVerify = async (req, res) => {
       message: err.message || "Some error occurred while creating the User."
     };
   }
+};
+
+// create jwt token
+exports.jwtToken = async (user) => {
+
+  const sessionSecret = process.env.SESSION_SECRET;
+  const ACCESS_TOKEN_EXPIRY_DAY = process.env.ACCESS_TOKEN_EXPIRY_DAY;
+
+  const userPayload = { sub: user.uuid, email: user.email }
+
+  const token = jwt.sign(userPayload, sessionSecret, { expiresIn: 60 * 60 * 24 * ACCESS_TOKEN_EXPIRY_DAY });
+  return { status: true, accessToken: token };
 };
