@@ -1,7 +1,7 @@
 module.exports = app => {
-  const authMiddleware = require("../middlewares/auth.middleware");
+  const authMiddleware = require("../../middlewares/auth.middleware");
 
-  const mondayCrm = require("../controllers/monday-crm.controller");
+  const mondayCrm = require("../../controllers/api/monday-crm.controller");
 
   let router = require("express").Router();
 

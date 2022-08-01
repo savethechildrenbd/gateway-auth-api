@@ -1,5 +1,5 @@
 module.exports = app => {
-  const clients = require("../controllers/oauth-client.controller.js");
+  const clients = require("../../controllers/admin-api/oauth-client.controller.js");
 
   let router = require("express").Router();
 
@@ -24,5 +24,5 @@ module.exports = app => {
   // Delete all Tutorials
   router.delete("/", clients.deleteAll);
 
-  app.use('/api/clients', router);
+  app.use('/admin/api/clients', router);
 };

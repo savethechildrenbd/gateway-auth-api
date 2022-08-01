@@ -1,7 +1,7 @@
 module.exports = app => {
   const url = require('url');
 
-  const oauthClient = require("../controllers/oauth-client.controller");
+  const oauthClient = require("../controllers/admin-api/oauth-client.controller");
   const oauthAccessToken = require("../controllers/oauth-access-token.controller");
   const auth = require("../controllers/auth-b2c.controller.js");
 

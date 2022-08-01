@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const url = require('url');
 
 const mail = require("../service/send-mail");
+
 const oauthAccessToken = require("../controllers/oauth-access-token.controller");
 
 const User = db.users;

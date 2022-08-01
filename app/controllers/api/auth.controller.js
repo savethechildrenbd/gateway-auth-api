@@ -1,7 +1,8 @@
-const db = require("../models");
+const db = require("../../models");
 const jwt = require('jsonwebtoken');
 
-const mail = require("../service/send-mail");
+const mail = require("../../service/send-mail");
+const oauthAccessToken = require("../../controllers/oauth-access-token.controller");
 
 const User = db.users;
 
@@ -21,8 +22,9 @@ exports.otp = async (req, res) => {
     const expiry_time = new Date(now_time);
     expiry_time.setMinutes(now_time.getMinutes() + 5);
     const otp_code = Math.floor(100000 + Math.random() * 900000).toString();
+    const client_id = req.header('client_id');
 
-    const user = await User.findOne({ where: { email: req.body.email } });
+    const user = await User.findOne({ where: { email: req.body.email, client_id: client_id } });
     await mail.sendOtp(req.body.email, otp_code);
     if (user) {
       const body = { expire_at: expiry_time.getTime(), code: otp_code };
@@ -34,6 +36,7 @@ exports.otp = async (req, res) => {
         email: req.body.email,
         expire_at: expiry_time.getTime(),
         code: otp_code,
+        client_id: client_id,
         published: req.body.published ? req.body.published : true
       };
       await User.create(body);
@@ -69,7 +72,7 @@ exports.otpVerify = async (req, res) => {
   try {
     const email = req.body.email;
     const code = req.body.code;
-
+    const client_id = req.header('client_id');
     const now_time = new Date().getTime();
 
     const user = await User.findOne({ where: { email: email } });
@@ -90,13 +93,15 @@ exports.otpVerify = async (req, res) => {
       return res.json({ status: false, message: 'OTP has expired, please try again.' });
     }
 
+    const oauthAccessTokenId = await oauthAccessToken.create(client_id, user.uuid);
+
     const sessionSecret = process.env.SESSION_SECRET;
     const ACCESS_TOKEN_EXPIRY_DAY = process.env.ACCESS_TOKEN_EXPIRY_DAY;
 
     const userPayload = { sub: user.uuid, email: user.email }
 
     const token = jwt.sign(userPayload, sessionSecret, { expiresIn: 60 * 60 * 24 * ACCESS_TOKEN_EXPIRY_DAY });
-    res.json({ status: true, token: token });
+    res.json({ status: true, accessToken: token, oauthAccessTokenId: oauthAccessTokenId.id });
 
   } catch (err) {
     res.status(500).send({
