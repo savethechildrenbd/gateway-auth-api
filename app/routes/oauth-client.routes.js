@@ -1,5 +1,5 @@
 module.exports = app => {
-  const clients = require("../controllers/client.controller.js");
+  const clients = require("../controllers/oauth-client.controller.js");
 
   let router = require("express").Router();
 

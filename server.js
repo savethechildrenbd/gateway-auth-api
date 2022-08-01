@@ -66,11 +66,11 @@ app.use(function (req, res, next) {
 // });
 
 require("./app/routes/public.routes")(app);
-require("./app/routes/turorial.routes")(app);
+// require("./app/routes/turorial.routes")(app);
 require("./app/routes/auth.routes")(app);
 require("./app/routes/auth-b2c.routes")(app);
 require("./app/routes/monday-crm.routes")(app);
-require("./app/routes/client.routes")(app);
+require("./app/routes/oauth-client.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.NODE_PORT || 8080;

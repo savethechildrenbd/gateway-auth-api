@@ -53,7 +53,6 @@ exports.otp = async (req, res) => {
       return { status: true, message: "OTP sent successfully" };
     }
   } catch (err) {
-    console.log("ssssssssssssssss");
     return {
       status: false,
       message: err.message || "Some error occurred while creating the User."
