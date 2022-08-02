@@ -6,6 +6,8 @@ const mail = require("../service/send-mail");
 
 const oauthAccessToken = require("../controllers/oauth-access-token.controller");
 
+const jwtMiddleware = require("../middlewares/jwt-token.middleware");
+
 const User = db.users;
 
 // Create and Save a new User and Update OTP Code
@@ -107,14 +109,9 @@ exports.otpVerify = async (req, res) => {
     }
 
     const oauthAccessTokenId = await oauthAccessToken.create(query.client_id, user.uuid);
+    const jwtToken = await jwtMiddleware.jwtToken(user);
 
-    const sessionSecret = process.env.SESSION_SECRET;
-    const ACCESS_TOKEN_EXPIRY_DAY = process.env.ACCESS_TOKEN_EXPIRY_DAY;
-
-    const userPayload = { sub: user.uuid, email: user.email }
-
-    const token = jwt.sign(userPayload, sessionSecret, { expiresIn: 60 * 60 * 24 * ACCESS_TOKEN_EXPIRY_DAY });
-    return { status: true, accessToken: token, oauthAccessTokenId: oauthAccessTokenId.id };
+    return Object.assign(jwtToken, { oauthAccessTokenId: oauthAccessTokenId.id });
 
   } catch (err) {
     return {
@@ -122,16 +119,4 @@ exports.otpVerify = async (req, res) => {
       message: err.message || "Some error occurred while creating the User."
     };
   }
-};
-
-// create jwt token
-exports.jwtToken = async (user) => {
-
-  const sessionSecret = process.env.SESSION_SECRET;
-  const ACCESS_TOKEN_EXPIRY_DAY = process.env.ACCESS_TOKEN_EXPIRY_DAY;
-
-  const userPayload = { sub: user.uuid, email: user.email }
-
-  const token = jwt.sign(userPayload, sessionSecret, { expiresIn: 60 * 60 * 24 * ACCESS_TOKEN_EXPIRY_DAY });
-  return { status: true, accessToken: token };
 };

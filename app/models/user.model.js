@@ -13,11 +13,11 @@ module.exports = (sequelize, Sequelize) => {
     },
     client_id: {
       type: Sequelize.STRING,
+      allowNull: false,
     },
     email: {
       type: Sequelize.STRING,
       allowNull: false,
-      unique: true
     },
     code: {
       type: Sequelize.STRING
@@ -37,6 +37,8 @@ module.exports = (sequelize, Sequelize) => {
     published: {
       type: Sequelize.BOOLEAN
     }
+  }, {
+    indexes: [{ unique: true, fields: ['email', 'client_id'] }]
   });
 
   return User;

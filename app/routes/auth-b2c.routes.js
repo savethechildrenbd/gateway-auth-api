@@ -1,5 +1,5 @@
 module.exports = app => {
-  const auth = require("../controllers/auth-b2c.controller.js");
+  const authController = require("../controllers/auth-b2c.controller.js");
   const url = require('url');
 
   let router = require("express").Router();
@@ -18,8 +18,8 @@ module.exports = app => {
       if (!req.body.username) {
         res.redirect(req.host_url + req.cookies?.ClientAuthorizationRequest ?? '');
       }
-      
-      const login = await auth.otp(req, res);
+
+      const login = await authController.otp(req, res);
 
       if (login.status == true) {
         res.render('login-verify', { username: req.body.username, message: '' });
@@ -27,14 +27,14 @@ module.exports = app => {
         res.render('login');
       }
     } catch (error) {
-      res.json({ message: "Welcome to application" });
+      res.json({ message: "Some error occurred" });
     }
   });
 
   // Create a new User
   router.post("/resend", async function (req, res) {
     try {
-      const login = await auth.otp(req, res);
+      const login = await authController.otp(req, res);
       res.json(login);
     } catch (error) {
       return {
@@ -50,12 +50,11 @@ module.exports = app => {
 
       let q = url.parse(req.cookies?.ClientAuthorizationRequest, true).query;
 
-      const loginVerify = await auth.otpVerify(req, res);
-      
+      const loginVerify = await authController.otpVerify(req, res);
+
       if (loginVerify.status == true) {
         let response_type = q.response_type;
         if (response_type == '0') {
-          res.header('Authorization', `Bearer ${loginVerify.accessToken}`);
           res.redirect(q.redirect_uri + '/' + loginVerify.oauthAccessTokenId);
         } else {
           let method = 'get';

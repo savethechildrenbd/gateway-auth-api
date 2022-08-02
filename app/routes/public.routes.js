@@ -3,7 +3,7 @@ module.exports = app => {
 
   const oauthClient = require("../controllers/admin-api/oauth-client.controller");
   const oauthAccessToken = require("../controllers/oauth-access-token.controller");
-  const authController = require("../controllers/auth-b2c.controller.js");
+  const jwtMiddleware = require("../middlewares/jwt-token.middleware");
 
   let router = require("express").Router();
 
@@ -36,7 +36,7 @@ module.exports = app => {
         if (time_difference < 0) {
           res.json({ status: false, message: 'Token has expired, please try again.' });
         } else {
-          const jwtToken = await authController.jwtToken(user);
+          const jwtToken = await jwtMiddleware.jwtToken(user);
           res.json(jwtToken);
         }
       } else {
