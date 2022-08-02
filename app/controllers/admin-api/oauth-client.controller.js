@@ -12,6 +12,13 @@ exports.create = (req, res) => {
     return;
   }
 
+  if (!req.body.company) {
+    res.status(400).send({
+      message: "company can not be empty!"
+    });
+    return;
+  }
+
   // Create a OauthClient
   const client = {
     name: req.body.name,

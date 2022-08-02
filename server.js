@@ -87,7 +87,6 @@ app.use(function (req, res, next) {
 // });
 
 require("./app/routes/public.routes")(app);
-// require("./app/routes/turorial.routes")(app);
 require("./app/routes/auth-b2c.routes")(app);
 
 //admin api
