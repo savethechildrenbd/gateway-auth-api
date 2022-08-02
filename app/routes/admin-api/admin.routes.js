@@ -1,0 +1,28 @@
+module.exports = app => {
+  const admins = require("../../controllers/admin-api/oauth-admin.controller");
+
+  let router = require("express").Router();
+
+  // Create a new Tutorial
+  router.post("/", admins.create);
+
+  // Retrieve all admins
+  router.get("/", admins.findAll);
+
+  // Retrieve all published admins
+  router.get("/published", admins.findAllPublished);
+
+  // Retrieve a single Tutorial with id
+  router.get("/:id", admins.findOne);
+
+  // Update a Tutorial with id
+  router.put("/:id", admins.update);
+
+  // Delete a Tutorial with id
+  router.delete("/:id", admins.delete);
+
+  // Delete all admins
+  router.delete("/", admins.deleteAll);
+
+  app.use('/admin/api/admins', router);
+};

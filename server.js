@@ -91,6 +91,8 @@ require("./app/routes/auth-b2c.routes")(app);
 
 //admin api
 require("./app/routes/admin-api/oauth-client.routes")(app);
+require("./app/routes/admin-api/admin.routes")(app);
+require("./app/routes/admin-api/login.routes")(app);
 
 // api 
 require("./app/routes/api/auth.routes")(app, auth);

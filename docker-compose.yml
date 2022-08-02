@@ -28,6 +28,7 @@ services:
       - DB_NAME=$MYSQLDB_DATABASE
       - DB_PORT=$MYSQLDB_DOCKER_PORT
       - SESSION_SECRET=$SESSION_SECRET
+      - SESSION_SECRET_ADMIN=$SESSION_SECRET_ADMIN
       - ACCESS_TOKEN_EXPIRY_DAY=$ACCESS_TOKEN_EXPIRY_DAY
     extra_hosts:
       - "host.docker.internal:host-gateway"
