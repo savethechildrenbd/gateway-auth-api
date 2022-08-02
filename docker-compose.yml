@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+
+  app:
+    build: ./
+    container_name: b2c_api
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+    environment:
+      - DB_HOST=$DB_HOST
+      - DB_USER=$MYSQLDB_USER
+      - DB_PASSWORD=$MYSQLDB_ROOT_PASSWORD
+      - DB_NAME=$MYSQLDB_DATABASE
+      - DB_PORT=$MYSQLDB_DOCKER_PORT
+      - SESSION_SECRET=$SESSION_SECRET
+      - ACCESS_TOKEN_EXPIRY_DAY=$ACCESS_TOKEN_EXPIRY_DAY
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    stdin_open: true
+    tty: true
