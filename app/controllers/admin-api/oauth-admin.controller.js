@@ -74,9 +74,8 @@ exports.create = (req, res) => {
     client_id: req.body.client_id,
     role: req.body.role,
     password: req.body.password,
-    published: req.body.published ? req.body.published : false
+    // published: req.body.published ? req.body.published : false
   };
-
   // Save OauthClient in the database
   OauthAdmin.create(admin)
     .then(data => {
@@ -86,7 +85,7 @@ exports.create = (req, res) => {
       res.status(500).send({
         status: false,
         message:
-          err.message || "Some error occurred while creating the User."
+          err || "Some error occurred while creating the User."
       });
     });
 };
@@ -100,7 +99,12 @@ exports.findAll = (req, res) => {
   const offset = (page - 1) * pageSize;
 
   const email = req.query.email;
-  const condition = email ? { email: { [Op.like]: `%${email}%` } } : null;
+  const client_id = req.user.client_id;
+
+  const condition = email ? { email: { [Op.like]: `%${email}%` } } : {};
+  if (client_id) {
+    condition.client_id = client_id;
+  }
 
   OauthAdmin.findAndCountAll({
     where: condition,

@@ -18,6 +18,12 @@ module.exports = (sequelize, Sequelize) => {
     email: {
       type: Sequelize.STRING,
       allowNull: false,
+      primaryKey: true,
+      validate: {
+        isEmail: {
+          msg: 'Email address must be valid.'
+        }
+      },
     },
     code: {
       type: Sequelize.STRING
@@ -38,7 +44,12 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.BOOLEAN
     }
   }, {
-    indexes: [{ unique: true, fields: ['email', 'client_id'] }]
+    indexes: [{
+      unique: {
+        msg: 'This email is already taken.'
+      },
+      fields: ['email', 'client_id']
+    }]
   });
 
   return User;

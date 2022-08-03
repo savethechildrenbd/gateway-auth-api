@@ -17,11 +17,17 @@ module.exports = (sequelize, Sequelize) => {
     company: {
       type: Sequelize.STRING,
     },
-    client_id: {
+    email: {
       type: Sequelize.STRING,
-      defaultValue: Sequelize.UUIDV4,
       allowNull: false,
-      unique: true
+      unique: {
+        msg: 'This email is already taken.'
+      },
+      validate: {
+        isEmail: {
+          msg: 'Email address must be valid.'
+        }
+      },
     },
     client_secret: {
       type: Sequelize.STRING,
@@ -40,6 +46,25 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.BOOLEAN,
       defaultValue: 1,
     }
+  }, {
+    tableName: 'oauth_clients',
+    hooks: {
+      beforeUpdate: (record, options) => {
+        // record.dataValues.updatedAt = new Date().toISOString().replace(/T/, ' ').replace(/\..+/g, '');
+      }
+    }
+  });
+
+
+  OauthClient.beforeCreate(async (oauthClient) => {
+    const records = await sequelize.query("SELECT (UUID()) as uuid");
+    oauthClient.client_secret = records[0][0].uuid.split('-').join('');
+  });
+
+  OauthClient.beforeUpdate(async (oauthClient) => {
+    // console.log("sssssssssssssss", oauthClient); to do for client_secret update
+    // const records = await sequelize.query("SELECT (UUID()) as uuid");
+    // oauthClient.client_secret = records[0][0].uuid.split('-').join('') ;
   });
 
   return OauthClient;

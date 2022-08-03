@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 
 module.exports = (sequelize, Sequelize) => {
-  const Admin = sequelize.define("oauth_admin", {
+  const Admin = sequelize.define("oauth_admins", {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -15,7 +15,14 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: false,
       primaryKey: true,
-      unique: true
+      unique: {
+        msg: 'This email is already taken.'
+      },
+      validate: {
+        isEmail: {
+          msg: 'Email address must be valid.'
+        }
+      },
     },
     client_id: {
       type: Sequelize.STRING,

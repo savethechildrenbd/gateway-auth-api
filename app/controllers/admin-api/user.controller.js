@@ -6,7 +6,12 @@ const Op = db.Sequelize.Op;
 // Retrieve all Users from the database.
 exports.findAll = (req, res) => {
   const email = req.query.email;
-  const condition = email ? { email: { [Op.like]: `%${email}%` } } : null;
+  const client_id = req.user.client_id;
+  const condition = email ? { email: { [Op.like]: `%${email}%` } } : {};
+
+  if (client_id) {
+    condition.uuid = client_id;
+  }
 
   User.findAll({ where: condition })
     .then(data => {
@@ -38,10 +43,15 @@ exports.findOne = (req, res) => {
 // Update a User by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
+  const client_id = req.user.client_id;
 
-  User.update(req.body, {
-    where: { id: id }
-  })
+  const condition = { id: id };
+
+  if (client_id) {
+    condition.client_id = client_id;
+  }
+
+  User.update(req.body, { where: condition })
     .then(num => {
       if (num == 1) {
         res.send({
@@ -63,9 +73,16 @@ exports.update = (req, res) => {
 // Delete a User with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
+  const client_id = req.user.client_id;
+
+  const condition = { id: id };
+
+  if (client_id) {
+    condition.client_id = client_id;
+  }
 
   User.destroy({
-    where: { id: id }
+    where: client_id
   })
     .then(num => {
       if (num == 1) {
@@ -87,8 +104,15 @@ exports.delete = (req, res) => {
 
 // Delete all Users from the database.
 exports.deleteAll = (req, res) => {
+  const client_id = req.user.client_id;
+  const condition = {};
+
+  if (client_id) {
+    condition.client_id = client_id;
+  }
+
   User.destroy({
-    where: {},
+    where: condition,
     truncate: false
   })
     .then(nums => {

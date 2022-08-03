@@ -1,6 +1,11 @@
 const db = require("../../models");
+
+
+const constant = require("../../models/constants/pagination.constants");
+
 const OauthClient = db.oauthClients;
 const Op = db.Sequelize.Op;
+
 
 // Create and Save a new OauthClient
 exports.create = (req, res) => {
@@ -23,6 +28,7 @@ exports.create = (req, res) => {
   const client = {
     name: req.body.name,
     company: req.body.company,
+    email: req.body.email,
     data_uris: req.body.data_uris,
     grants: req.body.grants,
     published: req.body.published ? req.body.published : false
@@ -43,12 +49,27 @@ exports.create = (req, res) => {
 
 // Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
-  const title = req.query.title;
-  const condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+  const page = req.query.page || 1;
 
-  OauthClient.findAll({ where: condition })
+  const pageSize = constant.ITEMS_PER_PAGE;
+  const offset = (page - 1) * pageSize;
+
+  const name = req.query.name;
+  const client_id = req.user.client_id;
+
+  const condition = name ? { name: { [Op.like]: `%${name}%` } } : {};
+
+  if (client_id) {
+    condition.uuid = client_id;
+  }
+
+  OauthClient.findAndCountAll({
+    where: condition,
+    offset: offset,
+    limit: pageSize,
+  })
     .then(data => {
-      res.send(data);
+      res.send({ status: true, data: data });
     })
     .catch(err => {
       res.status(500).send({
@@ -64,7 +85,7 @@ exports.findOne = (req, res) => {
 
   OauthClient.findByPk(id)
     .then(data => {
-      res.send(data);
+      res.send({ status: true, data: data });
     })
     .catch(err => {
       res.status(500).send({
@@ -76,7 +97,7 @@ exports.findOne = (req, res) => {
 // Find a single OauthClient with an client_id
 exports.findClient = async (client_id, client_secret) => {
   try {
-    const client = await OauthClient.findOne({ where: { client_id: client_id, client_secret: client_secret } });
+    const client = await OauthClient.findOne({ where: { uuid: client_id, client_secret: client_secret } });
     if (client.uuid) {
       return { status: true, client }
     } else {
@@ -91,23 +112,77 @@ exports.findClient = async (client_id, client_secret) => {
 exports.update = (req, res) => {
   const id = req.params.id;
 
-  OauthClient.update(req.body, {
+  // Validate request
+  if (!req.body.name) {
+    res.status(400).send({
+      message: "name can not be empty!"
+    });
+    return;
+  }
+
+  if (!req.body.company) {
+    res.status(400).send({
+      message: "company can not be empty!"
+    });
+    return;
+  }
+
+  // Create a OauthClient
+  const client = {
+    name: req.body.name,
+    company: req.body.company,
+    data_uris: req.body.data_uris,
+    grants: req.body.grants,
+  };
+
+  OauthClient.update(client, {
     where: { id: id }
   })
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "OauthClient was updated successfully."
+          status: true,
+          message: "Client was updated successfully."
         });
       } else {
         res.send({
-          message: `Cannot update OauthClient with id=${id}. Maybe OauthClient was not found or req.body is empty!`
+          status: false,
+          message: `Cannot update Client with id=${id}. Maybe Client was not found or req.body is empty!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error updating OauthClient with id=" + id
+        status: false,
+        message: "Error updating Client with id=" + id
+      });
+    });
+};
+
+// Update a OauthClient by the id in the request
+exports.resetClientSecret = (req, res) => {
+  const id = req.params.id;
+
+  OauthClient.update({
+    where: { id: id }
+  })
+    .then(num => {
+      if (num == 1) {
+        res.send({
+          status: true,
+          message: "Client was updated successfully."
+        });
+      } else {
+        res.send({
+          status: false,
+          message: `Cannot update Client with id=${id}. Maybe Client was not found or req.body is empty!`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        status: false,
+        message: "Error updating Client with id=" + id
       });
     });
 };
@@ -122,17 +197,20 @@ exports.delete = (req, res) => {
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "OauthClient was deleted successfully!"
+          status: true,
+          message: "Client was deleted successfully!"
         });
       } else {
         res.send({
-          message: `Cannot delete OauthClient with id=${id}. Maybe OauthClient was not found!`
+          status: false,
+          message: `Cannot delete Client with id=${id}. Maybe Client was not found!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Could not delete OauthClient with id=" + id
+        status: false,
+        message: "Could not delete Client with id=" + id
       });
     });
 };
@@ -144,10 +222,11 @@ exports.deleteAll = (req, res) => {
     truncate: false
   })
     .then(nums => {
-      res.send({ message: `${nums} Tutorials were deleted successfully!` });
+      res.send({ status: true, message: `${nums} Clients were deleted successfully!` });
     })
     .catch(err => {
       res.status(500).send({
+        status: false,
         message:
           err.message || "Some error occurred while removing all tutorials."
       });
@@ -162,6 +241,7 @@ exports.findAllPublished = (req, res) => {
     })
     .catch(err => {
       res.status(500).send({
+        status: false,
         message:
           err.message || "Some error occurred while retrieving tutorials."
       });
