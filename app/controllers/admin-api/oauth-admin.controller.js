@@ -2,6 +2,8 @@ const db = require("../../models");
 
 const jwtMiddleware = require("../../middlewares/jwt-token.middleware");
 
+const constant = require("../../models/constants/pagination.constants");
+
 const OauthAdmin = db.oauthAdmin;
 const Op = db.Sequelize.Op;
 
@@ -66,22 +68,25 @@ exports.create = (req, res) => {
   }
 
   // Create a OauthClient
-  const client = {
+  const admin = {
     name: req.body.name,
     email: req.body.email,
+    client_id: req.body.client_id,
+    role: req.body.role,
     password: req.body.password,
     published: req.body.published ? req.body.published : false
   };
 
   // Save OauthClient in the database
-  OauthAdmin.create(client)
+  OauthAdmin.create(admin)
     .then(data => {
-      res.send(data);
+      res.send({ status: true, data: data });
     })
     .catch(err => {
       res.status(500).send({
+        status: false,
         message:
-          err.message || "Some error occurred while creating the Admin."
+          err.message || "Some error occurred while creating the User."
       });
     });
 };
@@ -89,15 +94,25 @@ exports.create = (req, res) => {
 
 // Retrieve all Users from the database.
 exports.findAll = (req, res) => {
+  const page = req.query.page || 1;
+
+  const pageSize = constant.ITEMS_PER_PAGE;
+  const offset = (page - 1) * pageSize;
+
   const email = req.query.email;
   const condition = email ? { email: { [Op.like]: `%${email}%` } } : null;
 
-  OauthAdmin.findAll({ where: condition })
+  OauthAdmin.findAndCountAll({
+    where: condition,
+    offset: offset,
+    limit: pageSize,
+  })
     .then(data => {
-      res.send(data);
+      res.send({ status: true, data: data });
     })
     .catch(err => {
       res.status(500).send({
+        status: false,
         message:
           err.message || "Some error occurred while retrieving Users."
       });
@@ -110,11 +125,11 @@ exports.findOne = (req, res) => {
 
   OauthAdmin.findByPk(id)
     .then((user) => {
-      res.send(user);
+      res.send({ status: true, data: user });
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error retrieving Admin with id=" + id
+        message: "Error retrieving User with id=" + id
       });
     });
 };
@@ -123,23 +138,34 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
   const id = req.params.id;
 
-  OauthAdmin.update(req.body, {
+  const admin = {
+    name: req.body.name,
+    client_id: req.body.client_id,
+    role: req.body.role,
+    published: req.body.published ? req.body.published : false
+  };
+
+
+  OauthAdmin.update(admin, {
     where: { id: id }
   })
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "OauthAdmin was updated successfully."
+          status: true,
+          message: "User was updated successfully."
         });
       } else {
         res.send({
-          message: `Cannot update Admin with id=${id}. Maybe OauthAdmin was not found or req.body is empty!`
+          status: false,
+          message: `Cannot update User with id=${id}. Maybe OauthAdmin was not found or req.body is empty!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error updating Admin with id=" + id
+        status: false,
+        message: "Error updating User with id=" + id
       });
     });
 };
@@ -154,17 +180,20 @@ exports.delete = (req, res) => {
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "OauthAdmin was deleted successfully!"
+          status: true,
+          message: "Users was deleted successfully!"
         });
       } else {
         res.send({
-          message: `Cannot delete Admin with id=${id}. Maybe OauthAdmin was not found!`
+          status: false,
+          message: `Cannot delete Admin with id=${id}. Maybe Users was not found!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Could not delete Admin with id=" + id
+        status: false,
+        message: "Could not delete User with id=" + id
       });
     });
 };
@@ -176,10 +205,11 @@ exports.deleteAll = (req, res) => {
     truncate: false
   })
     .then(nums => {
-      res.send({ message: `${nums} Users were deleted successfully!` });
+      res.send({ status: true, message: `${nums} Users were deleted successfully!` });
     })
     .catch(err => {
       res.status(500).send({
+        status: false,
         message:
           err.message || "Some error occurred while removing all Users."
       });
@@ -188,12 +218,16 @@ exports.deleteAll = (req, res) => {
 
 // find all published OauthAdmin
 exports.findAllPublished = (req, res) => {
-  OauthAdmin.findAll({ where: { published: true } })
+  const id = req.params.id;
+  const update = { published: req.body.published ? req.body.published : false };
+
+  OauthAdmin.findAll(update, { where: { id: id } })
     .then(data => {
-      res.send(data);
+      res.send({ status: true, data: data });
     })
     .catch(err => {
       res.status(500).send({
+        status: false,
         message:
           err.message || "Some error occurred while retrieving Users."
       });
