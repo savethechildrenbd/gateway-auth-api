@@ -26,5 +26,5 @@ module.exports = app => {
   // Delete all Tutorials
   // router.delete("/", authMiddleware.adminAuth, clients.deleteAll);0
 
-  app.use('/admin/api/clients', router);
+  app.use('/admin/api/v1/clients', router);
 };

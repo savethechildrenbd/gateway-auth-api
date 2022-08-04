@@ -26,5 +26,5 @@ module.exports = app => {
   // Delete all admins
   // router.delete("/", authMiddleware.adminAuth, admins.deleteAll);
 
-  app.use('/admin/api/admins', router);
+  app.use('/admin/api/v1/admins', router);
 };

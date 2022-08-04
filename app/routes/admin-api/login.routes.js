@@ -14,5 +14,5 @@ module.exports = app => {
         });
     });
 
-    app.use('/admin/login', router);
+    app.use('/admin/api/v1/login', router);
 };
