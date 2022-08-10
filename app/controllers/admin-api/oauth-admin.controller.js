@@ -95,13 +95,13 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
   const page = req.query.page || 1;
 
-  const pageSize = constant.ITEMS_PER_PAGE;
-  const offset = (page - 1) * pageSize;
+  const pageSize = parseInt(req.query.size, 10) || constant.ITEMS_PER_PAGE;
+  const offset = (page) * pageSize;
 
-  const email = req.query.email;
+  const query = req.query.query;
   const client_id = req.user.client_id;
 
-  const condition = email ? { email: { [Op.like]: `%${email}%` } } : {};
+  const condition = query ? { email: { [Op.like]: `%${query}%` } } : {};
   if (client_id) {
     condition.client_id = client_id;
   }
@@ -112,11 +112,10 @@ exports.findAll = (req, res) => {
     limit: pageSize,
   })
     .then(data => {
-      res.send({ status: true, data: data });
+      res.json({ total_count: data ? data.count : 0, data: data ? data.rows : [] });
     })
     .catch(err => {
       res.status(500).send({
-        status: false,
         message:
           err.message || "Some error occurred while retrieving Users."
       });
