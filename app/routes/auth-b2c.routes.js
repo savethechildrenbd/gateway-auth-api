@@ -55,7 +55,7 @@ module.exports = app => {
       if (loginVerify.status == true) {
         let response_type = q.response_type;
         if (response_type == '0') {
-          res.redirect(q.redirect_uri + '/' + loginVerify.oauthAccessTokenId);
+          res.redirect(q.redirect_uri + '/' + loginVerify.accessToken);
         } else {
           let method = 'get';
           if (response_type == '2') {
