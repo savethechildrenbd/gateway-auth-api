@@ -15,6 +15,7 @@ module.exports = app => {
       const client = await oauthClient.findClient(q.client_id, q.client_secret);
       if (client.status == true) {
         res.cookie('ClientAuthorizationRequest', req.url);
+        res.cookie('redirect_uri', q.redirect_uri);
         res.render('login');
       } else {
         res.render('404');

@@ -17,7 +17,7 @@
       <p>Enter phone number or email address</p>
       <form action='/auth/login-verify' method="post">
         <input type="text" id="signInName" name="username" title="Please enter a valid Phone Number or Email Address"
-          readonly placeholder="Phone Number or Email Address" value="<%= username %>"
+          readonly placeholder="Email Address" value="<%= username %>"
           aria-label="Phone Number or Email Address" />
         <br /> <br />
         <input class="verifyInput" type="number" name="verification_code" autocomplete="off" required
@@ -35,7 +35,8 @@
   </div>
   <script>
     function resend() {
-      const formDataJsonString = JSON.stringify({ username: "mamunmo21@gmail.com" });
+      const username = document.querySelector('#signInName').value;
+      const formDataJsonString = JSON.stringify({ username: username });
       fetch('/auth/resend', {
         body: formDataJsonString,
         method: "post",
@@ -45,7 +46,7 @@
         },
       })
         .then((response) => response.json())
-        .then((data) => console.log(data));
+        // .then((data) => console.log(data));
     }
   </script>
 </body>
