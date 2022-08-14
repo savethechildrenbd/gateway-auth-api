@@ -1,16 +1,15 @@
 module.exports = app => {
-  const users = require("../../controllers/api/auth.controller.js");
+  const users = require("../../controllers/admin-api/user.controller");
+
+  const authMiddleware = require("../../middlewares/auth.middleware");
 
   let router = require("express").Router();
 
-  // Create a new Tutorial
-  router.post("/", users.create);
-
-  // Retrieve all users
-  router.get("/", users.findAll);
+  // // Retrieve all users
+  router.get("/", authMiddleware.adminAuth, users.findAll);
 
   // Retrieve all published users
-  router.get("/published", users.findAllPublished);
+  router.get("/published", authMiddleware.adminAuth, users.findAllPublished);
 
   // Retrieve a single Tutorial with id
   router.get("/:id", users.findOne);
