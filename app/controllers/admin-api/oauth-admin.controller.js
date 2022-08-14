@@ -93,7 +93,7 @@ exports.create = (req, res) => {
 
 // Retrieve all Users from the database.
 exports.findAll = (req, res) => {
-  const page = req.query.page || 1;
+  const page = req.query.page || 0;
 
   const pageSize = parseInt(req.query.size, 10) || constant.ITEMS_PER_PAGE;
   const offset = (page) * pageSize;

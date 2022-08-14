@@ -5,17 +5,26 @@ const Op = db.Sequelize.Op;
 
 // Retrieve all Users from the database.
 exports.findAll = (req, res) => {
-  const email = req.query.email;
-  const client_id = req.user.client_id;
-  const condition = email ? { email: { [Op.like]: `%${email}%` } } : {};
+  const page = req.query.page || 0;
 
+  const pageSize = parseInt(req.query.size, 10) || constant.ITEMS_PER_PAGE;
+  const offset = (page) * pageSize;
+
+  const query = req.query.query;
+  const client_id = req.user.client_id;
+
+  const condition = query ? { email: { [Op.like]: `%${query}%` } } : {};
   if (client_id) {
-    condition.uuid = client_id;
+    condition.client_id = client_id;
   }
 
-  User.findAll({ where: condition })
+  User.findAndCountAll({
+    where: condition,
+    offset: offset,
+    limit: pageSize,
+  })
     .then(data => {
-      res.send(data);
+      res.json({ total_count: data ? data.count : 0, data: data ? data.rows : [] });
     })
     .catch(err => {
       res.status(500).send({
