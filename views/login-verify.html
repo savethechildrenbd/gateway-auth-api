@@ -14,8 +14,8 @@
   <div class="container">
     <div class="white-box">
       <img class="banner-logo" src="../images/bannerlogo.png" alt="bannerlogo" />
-      <h1>Verify Code</h1>
-      <p>Verification code has been sent to your inbox. Please copy it to the input box below.</p>
+      <h2>Verify Code</h2>
+      <p class="verify-code">Verification code has been sent to your inbox. <br>Please copy it to the input box below.</p>
       <form action='/auth/login-verify' method="post">
         <input type="text" id="signInName" name="username" title="Please enter a valid Phone Number or Email Address"
           readonly placeholder="Email Address" value="<%= username %>"

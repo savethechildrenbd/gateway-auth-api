@@ -4,6 +4,7 @@ body {
   padding: 0;
   border: 0;
   color: #4a4f53;
+  font-family: 'Lato', sans-serif;
 }
 
 body {
@@ -31,6 +32,19 @@ body {
   background-color: #fff;
 }
 
+.white-box p{
+  font-size: 14px;
+  color: #4A4F53;
+}
+
+.white-box .verify-code{
+  color: #a70f0f;
+}
+
+.white-box h2{
+  color: #222221;
+}
+
 input {
   outline: 0;
   background-color: #fff !important;
@@ -41,7 +55,8 @@ input {
   font-size: 1em;
   height: 24px;
   line-height: 1.42857143;
-  padding: 6px 10px;
+  padding: 24px 10px;
+  box-sizing: border-box;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s !important;
   width: 100% !important;
   -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s !important;
@@ -50,15 +65,18 @@ input {
 }
 
 input::-moz-placeholder {
-  padding-left: 12px;
+  font-size: 14px;
+  color: #737373;
 }
 
 input:-ms-input-placeholder {
-  padding-left: 12px;
+  font-size: 14px;
+  color: #737373;
 }
 
 input::placeholder {
-  padding-left: 12px;
+  font-size: 14px;
+  color: #737373;
 }
 
 input::value {
@@ -68,6 +86,7 @@ input::value {
 input,
 select {
   border: 1px solid #605e5c;
+  font-size: 16px;
 }
 
 button {
@@ -77,7 +96,7 @@ button {
   border-radius: 0.5rem;
   cursor: pointer;
   display: inline-block;
-  font-size: 1em;
+  font-size: 14px;
   font-weight: 400;
   height: inherit;
   line-height: 1.3333333;
@@ -131,6 +150,7 @@ a {
   background-color: white;
   padding: 0 10px;
   font-weight: bold;
+  font-size: 12px;
 }
 
 .social-box {
@@ -143,6 +163,7 @@ a {
   align-items: center;
   justify-content: center;
   margin: 16px 0;
+  color:#4A4F53;
 }
 
 .social-icon {
@@ -156,8 +177,14 @@ a {
   font-size: 6rem;
 }
 
-#next {
+#next,#email_ver_but_resend {
   background-color: #1662c7;
+}
+
+#next:hover,#email_ver_but_resend:hover {
+  box-shadow: none;
+  background-color: #20559a;
+  color: #fff;
 }
 
 
