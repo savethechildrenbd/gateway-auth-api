@@ -7,6 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
   <title>Sign up or sign in</title>
+
+  <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+  <script src="../intl_tel_input/js/intlTelInput.min.js"></script>
+  <script src="../intl_tel_input/js/intlTelInput-jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="../intl_tel_input/css/demo.css">
+  <link rel="stylesheet" href="../intl_tel_input/css/intlTelInput.css" />
   <link rel="stylesheet" href="../style.css" />
 </head>
 
@@ -19,6 +27,8 @@
       <form action='/auth/login' method="post">
         <input type="text" id="signInName" name="username" title="Please enter a valid Phone Number or Email Address"
           autofocus="" placeholder="Email Address" aria-label="Phone Number or Email Address" required />
+
+        <input type="tel" id="mobile-number" placeholder="">
 
         <button id="cancel" aria-label="Cancel" type="button" onclick="cancle()">
           Cancel
@@ -46,8 +56,26 @@
       <!-- <p>Already have an account? <a href="#">Log in</a></p> -->
     </div>
   </div>
+  <!--
+  https://www.jqueryscript.net/form/jQuery-International-Telephone-Input-With-Flags-Dial-Codes.html#google_vignette
+  https://www.twilio.com/blog/international-phone-number-input-html-javascript
+  https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/intl-tel-input/v13/intl-tel-input-tests.ts
 
+  -->
   <script>
+    $("#mobile-number").intlTelInput({
+      preferredCountries: ["us", "co", "in", "de"],
+      onlyCountries: ["us", "co", "in", "de"],
+      separateDialCode: true,
+      customPlaceholder: function (
+        selectedCountryPlaceholder,
+        selectedCountryData
+      ) {
+        return "e.g. " + selectedCountryPlaceholder;
+      },
+      utilsScript:
+        "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
 
     function getCookie(cname) {
       let name = cname + "=";
